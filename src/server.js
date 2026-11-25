@@ -1,72 +1,127 @@
-// Cargando las dependencias necesarias
+const path = require('path');
 const express = require('express');
 const app = express();
 const PORT = 3000;
 
-// Middleware para entender el formato JSON en las peticiones
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../public')));
 
-// Base de datos temporal en memoria
 let tareas = [
-  { id: 1, titulo: 'Aprender Express', completada: false },
-  { id: 2, titulo: 'Crear una API REST', completada: false },
-  { id: 3, titulo: 'Probar la API', completada: false }
+  { id: 1, titulo: 'Aprender Express', fecha: '', completada: false },
+  { id: 2, titulo: 'Crear una API REST', fecha: '', completada: false },
+  { id: 3, titulo: 'Probar la API', fecha: '', completada: false }
 ];
 
-// 1. Obtener todas las tareas (GET)
-app.get('/', (req, res) => {
-  res.send('Bienvenido a la API de Tareas usando Express y node js');
-});
+let contactos = [
+  { id: 1, nombre: 'Felipe Arias', telefono: '3001234567', correo: 'felipe@correo.com' }
+];
 
-
-// 1. Obtener todas las tareas (GET)
+// --- RUTAS DE TAREAS ---
 app.get('/tareas', (req, res) => {
   res.json(tareas);
 });
 
-// 2. Crear una nueva tarea (POST)
 app.post('/tareas', (req, res) => {
-  const { titulo } = req.body;
-  if (!titulo) {
+  const { titulo, fecha } = req.body;
+  if (!titulo || !titulo.trim()) {
     return res.status(400).json({ error: 'El título es obligatorio' });
   }
   const nuevaTarea = {
     id: Date.now(),
-    titulo,
+    titulo: titulo.trim(),
+    fecha: fecha || '',
     completada: false
   };
   tareas.push(nuevaTarea);
   res.status(201).json(nuevaTarea);
 });
 
-// 3. Actualizar una tarea (PUT)
-// app.put('/tareas/:id', (req, res) => {
-//   const id = parseInt(req.params.id);
-//   const tarea = tareas.find(t => t.id === id);
+app.put('/tareas/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const tarea = tareas.find(t => t.id === id);
 
-//   if (!tarea) {
-//     return res.status(404).json({ error: 'Tarea no encontrada' });
-//   }
+  if (!tarea) {
+    return res.status(404).json({ error: 'Tarea no encontrada' });
+  }
 
-//   tarea.titulo = req.body.titulo ?? tarea.titulo;
-//   tarea.completada = req.body.completada ?? tarea.completada;
-//   res.json(tarea);
-// });
+  if (typeof req.body.titulo === 'string' && req.body.titulo.trim()) {
+    tarea.titulo = req.body.titulo.trim();
+  }
+  if (typeof req.body.fecha === 'string') {
+    tarea.fecha = req.body.fecha;
+  }
+  if (typeof req.body.completada === 'boolean') {
+    tarea.completada = req.body.completada;
+  }
 
-// // 4. Eliminar una tarea (DELETE)
-// app.delete('/tareas/:id', (req, res) => {
-//   const id = parseInt(req.params.id);
-//   const indice = tareas.findIndex(t => t.id === id);
+  res.json(tarea);
+});
 
-//   if (indice === -1) {
-//     return res.status(404).json({ error: 'Tarea no encontrada' });
-//   }
+app.delete('/tareas/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const indice = tareas.findIndex(t => t.id === id);
 
-//   tareas.splice(indice, 1);
-//   res.status(204).send();
-// });
+  if (indice === -1) {
+    return res.status(404).json({ error: 'Tarea no encontrada' });
+  }
 
-// Iniciar servidor
+  tareas.splice(indice, 1);
+  res.status(204).send();
+});
+
+// --- RUTAS DE CONTACTOS ---
+app.get('/contactos', (req, res) => {
+  res.json(contactos);
+});
+
+app.post('/contactos', (req, res) => {
+  const { nombre, telefono, correo } = req.body;
+  if (!nombre || !nombre.trim()) {
+    return res.status(400).json({ error: 'El nombre es obligatorio' });
+  }
+  const nuevoContacto = {
+    id: Date.now(),
+    nombre: nombre.trim(),
+    telefono: telefono ? telefono.trim() : '',
+    correo: correo ? correo.trim() : ''
+  };
+  contactos.push(nuevoContacto);
+  res.status(201).json(nuevoContacto);
+});
+
+app.put('/contactos/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const contacto = contactos.find(c => c.id === id);
+
+  if (!contacto) {
+    return res.status(404).json({ error: 'Contacto no encontrado' });
+  }
+
+  if (typeof req.body.nombre === 'string' && req.body.nombre.trim()) {
+    contacto.nombre = req.body.nombre.trim();
+  }
+  if (typeof req.body.telefono === 'string') {
+    contacto.telefono = req.body.telefono.trim();
+  }
+  if (typeof req.body.correo === 'string') {
+    contacto.correo = req.body.correo.trim();
+  }
+
+  res.json(contacto);
+});
+
+app.delete('/contactos/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const indice = contactos.findIndex(c => c.id === id);
+
+  if (indice === -1) {
+    return res.status(404).json({ error: 'Contacto no encontrado' });
+  }
+
+  contactos.splice(indice, 1);
+  res.status(204).send();
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

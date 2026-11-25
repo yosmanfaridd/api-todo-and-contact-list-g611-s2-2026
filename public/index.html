@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis Tareas y Contactos - DOM + Express</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dark">
+  <main class="todo-app">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">MI AGENDA · DOM + EXPRESS</p>
+        <h1>Mis tareas</h1>
+      </div>
+      <button type="button" id="theme-toggle" class="theme-button" title="Cambiar tema">☀</button>
+    </header>
+
+    <nav class="tabs" aria-label="Secciones">
+      <button type="button" class="tab-button active" data-tab="tareas">Tareas</button>
+      <button type="button" class="tab-button" data-tab="contactos">Contactos</button>
+    </nav>
+
+    <!-- SECCIÓN TAREAS -->
+    <section id="panel-tareas" class="tab-panel active">
+      <form id="task-form" class="todo-form">
+        <input id="todo-title" type="text" placeholder="¿Qué necesitas hacer?" autocomplete="off" />
+        <input id="date-picker" type="date" />
+        <button type="submit" class="add-button">
+          <span>+</span>
+          <span>Añadir</span>
+        </button>
+      </form>
+
+      <div class="tasks-section">
+        <div class="section-heading">
+          <h2>Hoy</h2>
+          <span id="task-count">0 tareas pendientes</span>
+        </div>
+        <ul id="task-list" class="task-list"></ul>
+        <p id="empty-tasks" class="empty-state">No tienes tareas pendientes.</p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN CONTACTOS -->
+    <section id="panel-contactos" class="tab-panel">
+      <form id="contact-form" class="contact-form">
+        <input id="contact-name" type="text" placeholder="Nombre completo" autocomplete="off" />
+        <input id="contact-phone" type="text" placeholder="Teléfono" autocomplete="off" />
+        <input id="contact-email" type="email" placeholder="Correo electrónico" autocomplete="off" />
+        <button type="submit" class="add-button">
+          <span>+</span>
+          <span>Guardar</span>
+        </button>
+      </form>
+
+      <div class="tasks-section">
+        <div class="section-heading">
+          <h2>Directorio</h2>
+          <span id="contact-count">0 contactos</span>
+        </div>
+        <ul id="contact-list" class="task-list"></ul>
+        <p id="empty-contacts" class="empty-state">No tienes contactos registrados.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

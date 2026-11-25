@@ -28,10 +28,19 @@ tabButtons.forEach((btn) => {
   });
 });
 
-// Cambiar tema claro / oscuro
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light') {
+  document.body.classList.remove('dark');
+  themeToggle.textContent = '☾';
+} else {
+  document.body.classList.add('dark');
+  themeToggle.textContent = '☀';
+}
+
 themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  themeToggle.textContent = document.body.classList.contains('dark') ? '☀' : '☾';
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  themeToggle.textContent = isDark ? '☀' : '☾';
 });
 
 // --- TAREAS (API /tareas) ---
